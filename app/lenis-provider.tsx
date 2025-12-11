@@ -8,7 +8,6 @@ interface LenisProviderProps {
   scrollEnabled?: boolean;
 }
 
-/** Example of controlling the ability to scroll w/ Lenis */
 function LenisController({ scrollEnabled }: { scrollEnabled: boolean }) {
   const lenis = useLenis();
 

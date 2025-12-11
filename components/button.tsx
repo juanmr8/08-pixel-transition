@@ -1,5 +1,7 @@
+'use client';
+
 import React from 'react';
-import { Link } from 'next-transition-router';
+import { Link, useTransitionState } from 'next-transition-router';
 
 interface BaseButtonProps {
 	children: React.ReactNode;
@@ -23,12 +25,17 @@ type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 function Button(props: ButtonProps) {
 	const { children, icon, className = '' } = props;
+	const { stage } = useTransitionState();
+	const isTransitioning = stage !== 'none';
 
 	const baseClasses = `flex items-center gap-4 bg-foreground py-3 px-5 rounded-full text-background text-[14px] uppercase font-bold leading-none ${className}`;
 
 	if (props.as === 'link') {
 		return (
-			<Link href={props.href} className={baseClasses}>
+			<Link
+				href={props.href}
+				className={`${baseClasses} ${isTransitioning ? 'pointer-events-none opacity-50' : ''}`}
+			>
 				{icon}
 				{children}
 			</Link>
@@ -39,7 +46,7 @@ function Button(props: ButtonProps) {
 		<button
 			type={props.type || 'button'}
 			onClick={props.onClick}
-			disabled={props.disabled}
+			disabled={props.disabled || isTransitioning}
 			className={baseClasses}
 		>
 			{icon}

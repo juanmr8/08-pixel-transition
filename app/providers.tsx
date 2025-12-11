@@ -19,7 +19,7 @@ function shuffleArray<T>(array: T[]): T[] {
 export function Providers({ children }: { children: React.ReactNode }) {
 	return (
 		<LenisProvider>
-			<TransitionRandom>{children}</TransitionRandom>
+			<TransitionFromLeft>{children}</TransitionFromLeft>
 		</LenisProvider>
 	);
 }
@@ -88,14 +88,12 @@ export function TransitionFromLeft({
 	const rows = 24;
 	const delay = 0.02;
 
-	// Helper function to animate pixels left-to-right (fade in)
 	const animateLeftToRight = (next: () => void) => {
 		const pixels = document.querySelectorAll('.pixel');
 		const tl = gsap.timeline();
 
-		// Left-to-right with overlapping randomness
 		Array.from({ length: columns }).forEach((_, col) => {
-			// Shuffle rows for this column
+
 			const rowIndices = shuffleArray(
 				Array.from({ length: rows }, (_, i) => i)
 			);
@@ -111,7 +109,6 @@ export function TransitionFromLeft({
 		tl.call(() => next());
 	};
 
-	// Helper function to animate pixels right-to-left (fade out)
 	const animateRightToLeft = (next: () => void) => {
 		const pixels = document.querySelectorAll('.pixel');
 		const tl = gsap.timeline();
@@ -122,7 +119,6 @@ export function TransitionFromLeft({
 
 			rowIndices.forEach((row, shufflePosition) => {
 				const pixelIndex = col * rows + row;
-				// Reverse: start from rightmost column
 				const delayValue = columns - col + shufflePosition;
 
 				tl.to(pixels[pixelIndex], { opacity: 0, duration: 0 }, delayValue * delay);
@@ -163,14 +159,11 @@ export function TransitionFromTop({ children }: { children: React.ReactNode }) {
 	const rows = 25;
 	const delay = 0.02;
 
-	// Helper function to animate pixels top-to-bottom
 	const animateTopToBottom = (opacity: number, next: () => void) => {
 		const pixels = document.querySelectorAll('.pixel');
 		const tl = gsap.timeline();
 
-		// Top-to-bottom with overlapping randomness
 		Array.from({ length: rows }).forEach((_, row) => {
-			// Shuffle columns for this row
 			const colIndices = shuffleArray(
 				Array.from({ length: columns }, (_, i) => i)
 			);
@@ -185,12 +178,10 @@ export function TransitionFromTop({ children }: { children: React.ReactNode }) {
 		tl.call(() => next());
 	};
 
-	// Helper function to animate pixels bottom-to-top (reverse)
 	const animateBottomToTop = (opacity: number, next: () => void) => {
 		const pixels = document.querySelectorAll('.pixel');
 		const tl = gsap.timeline();
 
-		// Bottom-to-top reverse
 		Array.from({ length: rows }).forEach((_, row) => {
 			const colIndices = shuffleArray(
 				Array.from({ length: columns }, (_, i) => i)
@@ -199,7 +190,6 @@ export function TransitionFromTop({ children }: { children: React.ReactNode }) {
 			colIndices.forEach((col, shufflePosition) => {
 				const pixelIndex = row * columns + col;
 
-				// Reverse: start from bottom
 				const delayValue = rows - row + shufflePosition;
 
 				tl.to(pixels[pixelIndex], { opacity, duration: 0 }, delayValue * delay);
